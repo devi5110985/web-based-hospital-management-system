@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block contents %}
+<style>
+    
+
+    .login-container {
+        background: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 380px;
+        text-align: center;
+    }
+
+    .login-form h2 {
+        margin-bottom: 1.5rem;
+        color: #333;
+        font-size: 26px;
+        font-weight: 600;
+    }
+
+    .input-group {
+        margin-bottom: 1.2rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input-group label {
+        margin-bottom: 0.3rem;
+        font-size: 14px;
+        color: #777;
+        font-weight: 500;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #6200ea;
+        outline: none;
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: #6200ea;
+        color: #fff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 15px rgba(98, 0, 234, 0.3);
+    }
+
+    .submit-btn:hover {
+        background: #4e00b8;
+    }
+
+    .submit-btn:active {
+        background: #3d0093;
+        transform: scale(0.98);
+    }
+
+</style>
+<br>
+<center>
+    {% for mes in messages%}
+    <h4 style="color: #009879; background-color:rgba(40, 167, 69, 0.2)"> {{mes}}</h4>
+    {% endfor %}
+<div class="login-container">
+    <form action="{% url 'Patient_Login' %}" class="login-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Patient Login!</h2>
+        <div class="input-group">
+            <label for="UserName">Name</label>
+            <input type="text" name="name" id="UserName" placeholder="Enter your username" required>
+        </div>
+        <div class="input-group">
+            <label for="Password">Password</label>
+            <input type="password" name="pws" id="Password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+    </form>
+</div>
+</center>
+<br>
+{% endblock %}

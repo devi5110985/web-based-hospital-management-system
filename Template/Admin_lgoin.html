@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block contents %}
+{% load static %}
+<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}" />
+
+<!-- Stylesheets -->
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'Css/util.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'Css/main.css' %}">
+
+<style>
+    
+
+    .container-login100 {
+        background: linear-gradient(135deg, #39b7da, #59aeb6);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .wrap-login100 {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .login100-pic img {
+        max-width: 100%;
+        transition: transform 0.5s ease;
+        border-radius: 10px;
+    }
+
+    .login100-pic:hover img {
+        transform: scale(1.05);
+    }
+
+    .login100-form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login100-form-title {
+        font-size: 26px;
+        color: #333;
+        margin-bottom: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    .wrap-input100 {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input100 {
+        background: #f0f0f0;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 15px;
+        transition: background 0.3s, box-shadow 0.3s;
+        text-align: center;
+    }
+
+    .input100:focus {
+        background: #e8e8e8;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        outline: none;
+    }
+
+    .symbol-input100 {
+        color: #9b59b6;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+    }
+
+    .login100-form-btn {
+        width: 100%;
+        background: #6200ea;
+        color: #ffffff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s;
+        box-shadow: 0 4px 15px rgba(98, 0, 234, 0.3);
+    }
+
+    .login100-form-btn:hover {
+        background: #4e00b8;
+    }
+
+    .login100-form-btn:active {
+        transform: scale(0.98);
+    }
+
+</style>
+
+<!-- Form Container -->
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <div class="login100-pic">
+                <img src="{% static 'images/ad.png' %}" alt="Admin Login Image">
+            </div>
+
+            <form class="login100-form validate-form" action="{% url 'Admin_login' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <span class="login100-form-title">
+                    Administrator Login
+                </span>
+
+                <div class="wrap-input100 validate-input" data-validate="Valid username is required">
+                    <input class="input100" type="text" name="username" placeholder="Username" required>
+                    <span class="symbol-input100">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <input class="input100" type="password" name="password" placeholder="Password" required>
+                    <span class="symbol-input100">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn">
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

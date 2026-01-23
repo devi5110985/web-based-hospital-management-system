@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+<style>
+    .form-container {
+        margin: 30px auto;
+        padding: 20px;
+        max-width: 600px;
+        background-color: #f8fafc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .form-table td {
+        padding: 12px;
+        font-size: 16px;
+        vertical-align: middle;
+    }
+
+    .form-table tr td:first-child {
+        text-align: right;
+        font-weight: bold;
+        color: #555;
+        padding-right: 15px;
+        white-space: nowrap;
+    }
+
+    .form-table tr:nth-child(even) {
+        background-color: #eef2f6;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+        border-color: #4a90e2;
+        outline: none;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #357abd;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Patient Registration</h2>
+    <form action="{% url 'Patient_Register' %}" method="post" enctype="multipart/form-data">
+        {% for mes in messages %}
+        <h4 style="color: aquamarine;">{{mes}}</h4>
+        {% endfor%}
+        {% csrf_token %}
+        <table class="form-table">
+            <tr>
+                <td>Name:</td>
+                <td>{{ form.name }}</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>{{ form.email }}</td>
+            </tr>
+            <tr>
+                <td>Phone:</td>
+                <td>{{ form.phone }}</td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td>{{ form.password }}</td>
+            </tr>
+            <tr>
+                <td>Confirm Password:</td>
+                <td>{{ form.confirm_password }}</td>
+            </tr>
+        </table>
+        <input type="submit" class="submit-btn" value="Submit">
+    </form>
+</div>
+{% endblock %}

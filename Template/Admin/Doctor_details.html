@@ -1,0 +1,102 @@
+{% extends 'Admin/AdminHome.html' %}
+{% block contents %}
+{% load static %}
+
+
+
+<div class="doctor-details">
+    
+    <h1 class="text-center">Doctor Details</h1>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>SL No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Specialization</th>
+                <th>Qualification</th>
+                <!-- <th>Experience</th> -->
+                <th>Password</th>
+                <th>Edit/Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in Doctor_data %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{ doc.name }}</td>
+                <td>{{ doc.email }}</td>
+                <td>{{ doc.phone }}</td>
+                <td>{{ doc.specialization }}</td>
+                <td>{{ doc.qualification }}</td>
+                <!-- <td>{{ doc.experience }}</td> -->
+                <td>{{ doc.password  }}</td>
+                <td><a href="{% url 'Update_Doctor_Details' doc.id%}">Edit</a>/<a href="{% url 'Delete_Doctor_Details' doc.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {%for mes in messages %}
+    <h3 style="color: #009879;">{{mes}}</h3>
+    {% endfor %}
+</div>
+
+<style>
+    .doctor-details {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 18px;
+        text-align: left;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+    }
+
+    .styled-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

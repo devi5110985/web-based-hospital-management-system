@@ -1,0 +1,106 @@
+{% extends 'Doctor/Doctor_Home.html'%}
+{% block contents %}
+
+{% load static %}
+
+
+
+
+<div class="doctor-details">
+
+    <h1 class="text-center">Patient Details</h1>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>SL No</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Problem</th>
+                <th>Doctor Name</th>
+                <th>Report</th>
+                <th>Medication</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patientdata in Patient_data %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{ patientdata.name }}</td>
+                <td>{{ patientdata.age }}</td>
+                <td>{{ patientdata.phone }}</td>
+                <td>{{ patientdata.address }}</td>
+                <td>{{ patientdata.problem }}</td>
+                <td>{{ patientdata.doctor_name }}</td>
+                <td><a href="{{ patientdata.upload_report.url }}" target="_blank" class="badge bg-success"
+                        style=" text-decoration: none; color: white;"> Download Report</a></td>
+                        
+                        <td><a href="{% url 'Medication' patientdata.id %}" class="badge bg-warning">Medication</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {%for mes in messages %}
+    <h3 style="color: #009879;">{{mes}}</h3>
+    {% endfor %}
+</div>
+
+<style>
+    .doctor-details {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-center {
+        text-align: center;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 18px;
+        text-align: left;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+    }
+
+    .styled-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

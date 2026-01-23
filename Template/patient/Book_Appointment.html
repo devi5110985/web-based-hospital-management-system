@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block contents %}
+{% load static %}
+<style>
+    /* styles.css */
+    .card {
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        /* Light grey background for cards */
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style> <!-- Link to external CSS if needed -->
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">Book an Appointment</h2>
+                {% for mes in messages %}
+                <h4>{{mes}}</h4>
+                {% endfor %}
+                <form method="POST" action="{% url 'Book_Appointments' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="id_name" class="form-label">Name</label>
+                        {{ App_form.name }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_phone" class="form-label">Phone</label>
+                        {{ App_form.phone }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_age" class="form-label">Age</label>
+                        {{ App_form.age }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_address" class="form-label">Address</label>
+                        {{ App_form.address}}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_doctor_name" class="form-label">Consultation Department</label>
+                        {{ App_form.problem }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_doctor_name" class="form-label">Doctor Name</label>
+                        {{ App_form.doctor_name }}
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_upload_reports" class="form-label">Upload_Reports</label>
+                        {{ App_form.upload_report }}
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_status" class="form-label"></label>
+                        {{ App_form.medication }}
+
+                    </div>
+                    
+
+                    <div class="form-group mb-3">
+                        <label for="id_status" class="form-label"></label>
+                        {{ App_form.status }}
+
+                    </div>
+                   
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
