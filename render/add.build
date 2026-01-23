@@ -1,0 +1,5 @@
+In Render's Web Service configuration:
+
+- Build Command:  ./build.sh
+
+- Start Command:  gunicorn Hospital_Management_System.wsgi:application
