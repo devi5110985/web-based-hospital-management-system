@@ -1,0 +1,26 @@
+# Step 1: Clone
+git clone https://github.com/your-username/web-based-hospital-management-system.git
+
+# Step 2: Go into project
+cd web-based-hospital-management-system
+
+# Step 3: Create virtual environment
+python -m venv env
+
+# Step 4: Activate virtual environment
+env\Scripts\activate
+
+# Step 5: Install dependencies
+pip install django==4.2.16 pillow==10.4.0 xhtml2pdf whitenoise==6.6.0
+
+# Step 6: Make migrations
+python manage.py makemigrations
+
+# Step 7: Apply migrations
+python manage.py migrate
+
+# Step 8: Run server
+python manage.py runserver
+
+# Step 9: Open browser
+# http://127.0.0.1:8000/

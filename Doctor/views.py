@@ -41,7 +41,7 @@ def Show_Patients(request):
     doctor = AddDoctor.objects.get(name=request.session['doctor_name'])
     
     # Filter the appointments to match the doctor and the approved status
-    Patient_data = Book_Appointment.objects.filter(doctor_name=doctor, status='Approved' , medication='None')
+    Patient_data = Book_Appointment.objects.filter(doctor_name=str(doctor), status='Approved')
     
     # Render the template with the filtered data
     return render(request, 'Doctor/Show_Patients.html', {'Patient_data': Patient_data})
@@ -73,7 +73,8 @@ def Medication(request , id):
 
 
 def Medicatin_view_admin(request):
-    data = Doctor_Medication.objects.filter(medication='Sended')
-    print('axsasasas',data)
+    doctor_name = request.session.get('doctor_name')
+    doctor = AddDoctor.objects.get(name=doctor_name)
+    data = Doctor_Medication.objects.filter(doctor_name=str(doctor), medication='Sended')
 
     return render(request  ,'Doctor/Medicatin_view_admin.html'  , {'data':data})

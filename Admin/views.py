@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect
-from Doctor.models import AddDoctor
+from Doctor.models import AddDoctor, Doctor_Medication
 from Doctor.forms import AddDoctor_Form , Doctor_Update_form
 from django.contrib import messages
 from Patient.models import Book_Appointment 
@@ -131,4 +131,6 @@ def View_Patient_Payments(request, id ):
     return render(request,'Admin/View_patient_payments.html', {'Patient_data':Patient_data}) 
 
 
-                                                                                     
+def Admin_Medication_View(request):
+    data = Doctor_Medication.objects.filter(medication='Sended')
+    return render(request, 'Admin/Admin_Medication.html', {'data': data})

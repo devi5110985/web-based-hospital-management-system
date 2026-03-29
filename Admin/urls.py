@@ -14,5 +14,6 @@ urlpatterns = [
     path('Add_Appointments/<int:id>/',views.Aprove_Appointments , name="Add_Appointments"),
     path('All_Patient_information/',views.All_Patient_information , name="All_Patient_information"),
     path('View_patient_payments/<int:id>/',views.View_Patient_Payments , name="View_patient_payments"),
+    path('Admin_Medication/',views.Admin_Medication_View , name="Admin_Medication"),
 
 ]
