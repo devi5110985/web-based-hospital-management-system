@@ -11,8 +11,7 @@ python -m venv env
 env\Scripts\activate
 
 # Step 5: Install dependencies
-pip install django==4.2.16 pillow==10.4.0 xhtml2pdf whitenoise==6.6.0
-
+C
 # Step 6: Make migrations
 python manage.py makemigrations
 

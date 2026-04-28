@@ -8,6 +8,6 @@ asgiref==3.8.1
 asn1crypto==1.5.1
 certifi==2024.8.30
 cffi==1.17.1
-backports.zoneinfo==0.2.1
+backports.zoneinfo==0.2.1; python_version < "3.9"
 PyYAML==6.0.1
 whitenoise==6.6.0
