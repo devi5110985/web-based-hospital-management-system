@@ -49,9 +49,15 @@
                         </a>
                     </td>
                     <td class="px-4 py-3">
-                        <a href="{% url 'Medication' patientdata.id %}" class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 text-xs font-semibold">
-                            Add Medication
-                        </a>
+                        {% if patientdata.medication == 'Sended' %}
+                            <span class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                                <i class="fas fa-check-circle mr-1"></i>Sent
+                            </span>
+                        {% else %}
+                            <a href="{% url 'Medication' patientdata.id %}" class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 text-xs font-semibold">
+                                Add Medication
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}

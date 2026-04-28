@@ -98,25 +98,30 @@ def Patient_Home(request):
 
 
 def Medication_Reoprt(request):
-    
-
-    
     try:
-        name =request.session['name']
-        data = Doctor_Medication.objects.get(name = name , medication = 'Sended')
-        data1 =  Book_Appointment.objects.get(name = name , medication = 'Sended')
-    
-        return render(request,'patient/Reports.html' , {'data':data , 'data1':data1})
-    except Exception as e :
+        name = request.session['name']
+        medications = Doctor_Medication.objects.filter(name=name, medication='Sended').order_by('-id')
+        appointments = Book_Appointment.objects.filter(name=name, medication='Sended').order_by('-id')
+        
+        # Combine them for the template
+        reports = []
+        for med, app in zip(medications, appointments):
+            reports.append({'med': med, 'app': app})
+            
+        if not reports:
+            raise Exception("No reports available")
+            
+        return render(request, 'patient/Reports.html', {'reports': reports})
+    except Exception as e:
          print(e)
          messages.error(request, "No Medication Avaliable for this patient. Not yet Booked an Appointment")
-    return render(request,'patient/Reports.html')
+    return render(request, 'patient/Reports.html')
 
 
 def Paytment_view(request):
       name =request.session['name']
-      data = Pyment_Details.objects.get(name=name)
-      amount = data.amount
+      payment_data = Pyment_Details.objects.filter(name=name).last()
+      amount = payment_data.amount if payment_data else 0
     
       if request.method == 'POST':
         name =request.POST.get('patient_name')
@@ -140,8 +145,14 @@ def Paytment_view(request):
  
 def Report_pdf_view(request):
     name =request.session['name']
-    data = Doctor_Medication.objects.get(name = name , medication = 'Sended')
-    data1 =  Book_Appointment.objects.get(name = name , medication = 'Sended')
+    report_id = request.GET.get('id')
+    
+    if report_id:
+        data = Doctor_Medication.objects.filter(id=report_id).first()
+        data1 = Book_Appointment.objects.filter(name=name, medication='Sended').last()
+    else:
+        data = Doctor_Medication.objects.filter(name = name , medication = 'Sended').last()
+        data1 =  Book_Appointment.objects.filter(name = name , medication = 'Sended').last()
     
 
     template_path = 'patient/pdf_report.html'
