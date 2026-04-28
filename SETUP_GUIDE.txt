@@ -1,0 +1,192 @@
+================================================================================
+   WEB-BASED HOSPITAL MANAGEMENT SYSTEM - SETUP & RUN GUIDE
+================================================================================
+
+A Django 4.2 web application with three role-based modules:
+  - Admin   : manages doctors, patients, appointments, payments
+  - Doctor  : manages prescriptions, medications, patient records
+  - Patient : books appointments, views prescriptions, makes payments
+
+Database: SQLite (bundled, no external DB setup required)
+PDF generation: xhtml2pdf
+Email: Gmail SMTP (already configured in settings.py for dev)
+
+--------------------------------------------------------------------------------
+ 1. PREREQUISITES
+--------------------------------------------------------------------------------
+
+Install the following before starting:
+
+  - Python 3.9 - 3.11 (recommended: 3.11)
+        Verify:  python --version
+  - pip (comes with Python)
+        Verify:  pip --version
+  - Git
+        Verify:  git --version
+
+Notes:
+  - Pillow and xhtml2pdf require a working C build chain on some systems.
+    On Windows, the prebuilt wheels install fine with the listed Python
+    versions. On Linux, install:  sudo apt install python3-dev libjpeg-dev zlib1g-dev
+
+--------------------------------------------------------------------------------
+ 2. CLONE THE REPOSITORY
+--------------------------------------------------------------------------------
+
+  git clone https://github.com/vamsi746/web-based-hospital-management-system.git
+  cd web-based-hospital-management-system
+
+--------------------------------------------------------------------------------
+ 3. CREATE & ACTIVATE A VIRTUAL ENVIRONMENT
+--------------------------------------------------------------------------------
+
+  Windows (PowerShell):
+      python -m venv env
+      env\Scripts\activate
+
+  Windows (cmd):
+      python -m venv env
+      env\Scripts\activate.bat
+
+  macOS / Linux:
+      python3 -m venv env
+      source env/bin/activate
+
+You should now see "(env)" at the start of your shell prompt.
+
+--------------------------------------------------------------------------------
+ 4. INSTALL DEPENDENCIES
+--------------------------------------------------------------------------------
+
+  pip install --upgrade pip
+  pip install -r requirements.txt
+
+Installed packages:
+  Django 4.2.16, gunicorn, Pillow, xhtml2pdf, arabic-reshaper,
+  python-bidi, asgiref, asn1crypto, certifi, cffi, PyYAML, whitenoise
+
+--------------------------------------------------------------------------------
+ 5. APPLY DATABASE MIGRATIONS
+--------------------------------------------------------------------------------
+
+The repository ships with a pre-populated db.sqlite3, but you should still
+run migrations to make sure your schema is current:
+
+  python manage.py makemigrations
+  python manage.py migrate
+
+If you want a fresh database, delete db.sqlite3 first, then run the two
+commands above.
+
+--------------------------------------------------------------------------------
+ 6. CREATE A SUPERUSER (for Django /admin/ panel)
+--------------------------------------------------------------------------------
+
+  python manage.py createsuperuser
+
+Enter username, email, and password when prompted. This account is used to
+log in at  http://127.0.0.1:8000/admin/
+
+--------------------------------------------------------------------------------
+ 7. COLLECT STATIC FILES (optional for development)
+--------------------------------------------------------------------------------
+
+Only required for production / when DEBUG = False:
+
+  python manage.py collectstatic --no-input
+
+--------------------------------------------------------------------------------
+ 8. RUN THE DEVELOPMENT SERVER
+--------------------------------------------------------------------------------
+
+  python manage.py runserver
+
+Open in your browser:
+  http://127.0.0.1:8000/             - Admin module landing
+  http://127.0.0.1:8000/patient/     - Patient module
+  http://127.0.0.1:8000/doctor/      - Doctor module
+  http://127.0.0.1:8000/admin/       - Django built-in admin panel
+
+Stop the server with Ctrl + C.
+
+--------------------------------------------------------------------------------
+ 9. PROJECT STRUCTURE
+--------------------------------------------------------------------------------
+
+  Hospital_Management_System/   - Django project (settings, root urls, wsgi)
+  Admin/                        - Admin app (views, models, urls, migrations)
+  Doctor/                       - Doctor app
+  Patient/                      - Patient app
+  Template/                     - HTML templates (TEMPLATES.DIRS)
+  Static/                       - Project-level static assets
+  media/                        - Uploaded files (created at runtime)
+  db.sqlite3                    - SQLite database
+  manage.py                     - Django management entry point
+  requirements.txt              - Python dependencies
+  build.sh                      - Build script (used on Render/CI)
+
+--------------------------------------------------------------------------------
+10. EMAIL CONFIGURATION
+--------------------------------------------------------------------------------
+
+Gmail SMTP credentials are present in Hospital_Management_System/settings.py
+(EMAIL_HOST_USER / EMAIL_HOST_PASSWORD). For your own deployment:
+
+  1. Replace with your own Gmail address.
+  2. Generate an App Password (Google Account -> Security -> App passwords)
+     and use it as EMAIL_HOST_PASSWORD.
+  3. For production, move these values into environment variables instead
+     of committing them to source control.
+
+--------------------------------------------------------------------------------
+10a. EXISTING USERS / LOGIN CREDENTIALS (from bundled db.sqlite3)
+--------------------------------------------------------------------------------
+
+Login behavior in code:
+  - Admin   : hardcoded in Admin/views.py  -> username: admin / password: admin
+  - Doctor  : logs in by NAME + password against table Doctor_adddoctor
+  - Patient : logs in by NAME + password against table Patient_patient_regiser
+
+ADMIN
++-----------+-----------+
+| username  | password  |
++-----------+-----------+
+| admin     | admin     |
++-----------+-----------+
+
+DOCTORS  (table: Doctor_adddoctor)
++----+----------+----------------------------+--------------+------------------+
+| id | name     | email                      | password     | specialization   |
++----+----------+----------------------------+--------------+------------------+
+| 1  | Krishna  | krishna@gmail.com          | Krishna@123  | Orthopatic       |
+| 2  | Manohar  | manohar@gmail.com          | Manohar@123  | Neurology        |
+| 4  | Teja     | teja@gmail.com             | Teja@123     | General Surgon   |
+| 7  | krishna  | gonekrishna108@gmail.com   | Krishna@123  | abc              |
+| 8  | manohar  | datapoint.manohar@gmail.com| Manohar@1234 | xyz              |
+| 10 | Shabri   | bhargav.podila@gmail.com   | 12345678     | abc              |
++----+----------+----------------------------+--------------+------------------+
+
+PATIENTS  (table: Patient_patient_regiser)
++----+-----------+----------------------+--------------+
+| id | name      | email                | password     |
++----+-----------+----------------------+--------------+
+| 12 | xyz       | xyz@gmail.com        | Xyz@123      |
+| 13 | sireesha  | alex@gmail.com       | Sireesha@123 |
+| 14 | tharun    | tharun123@gmail.com  | tharun       |
+| 15 | bharath   | bharath123@gmail.com | bharath      |
+| 16 | devi      | devi@gmail.com       | devi         |
+| 17 | vamsi     | vamsi@gmail.com      | vamsi123     |
++----+-----------+----------------------+--------------+
+
+RECOMMENDED DEMO LOGINS (each has the full data flow ready)
+  Admin   ->  admin / admin
+  Doctor  ->  Teja  / Teja@123     (has patients xyz + devi routed to him)
+  Patient ->  devi  / devi         (approved appointment + medications from Teja)
+
+Other valid full-flow pairings:
+  Doctor Manohar / Manohar@123  <->  Patient tharun  / tharun
+  Doctor Krishna / Krishna@123  <->  Patient bharath / bharath
+
+Note: patients sireesha (id 13) and vamsi (id 17) have no appointment records.
+
+--------------------------------------------------------------------------------
