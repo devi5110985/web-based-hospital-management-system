@@ -133,7 +133,7 @@
         stats: { doctors: 0, patients: 0, pending: 0, approved: 0, medications: 0, payments_paid: 0, payments_due: 0 },
         chart: null,
         async init() {
-          const res = await fetch('{% url 'api_admin_stats' %}');
+          const res = await fetch("{% url 'api_admin_stats' %}");
           const data = await res.json();
           this.stats = data;
           this.renderChart(data.specializations || {});

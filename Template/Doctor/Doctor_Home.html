@@ -98,7 +98,7 @@
                 stats: { my_patients: 0, sent_medications: 0, pending_medications: 0, doctor_name: '', specialization: '' },
                 chart: null,
                 async init() {
-                    const res = await fetch('{% url 'api_doctor_stats' %}');
+                    const res = await fetch('{% url "api_doctor_stats" %}');
                     const data = await res.json();
                     this.stats = data;
                     this.renderChart();

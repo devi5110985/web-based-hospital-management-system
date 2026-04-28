@@ -98,7 +98,7 @@
                 stats: { name: '', appointments_total: 0, appointments_approved: 0, medications: 0, payments_total: 0, payments_paid: 0 },
                 chart: null,
                 async init() {
-                    const res = await fetch('{% url 'api_patient_stats' %}');
+                    const res = await fetch('{% url "api_patient_stats" %}');
                     const data = await res.json();
                     this.stats = data;
                     this.renderChart();
