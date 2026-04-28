@@ -19,7 +19,7 @@ class Book_Appointment(models.Model):
     address = models.CharField(max_length=100)
     doctor_name  = models.CharField(max_length=100)
     problem = models.CharField(max_length=100)
-    upload_report = models.FileField(upload_to='media/' , validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+    upload_report = models.FileField(upload_to='reports/', validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
     medication = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
 

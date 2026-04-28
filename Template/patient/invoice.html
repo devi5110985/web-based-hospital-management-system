@@ -1,178 +1,69 @@
 {% extends 'patient/Patient_Home.html'%}
-{%block contents%}
+{% block contents %}
 {% load static %}
-<style>
-     .invoice-container {
-            background-color: #fff;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header img {
-            max-width: 150px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            color: #333;
-        }
-
-        .invoice-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-
-        .invoice-info div {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .invoice-info div strong {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 40px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #6c5ce7;
-            color: white;
-        }
-
-        .total {
-            text-align: right;
-        }
-
-        .total td {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #777;
-        }
-
-        /* Print Styles */
-        @media print {
-            body {
-                padding: 0;
-            }
-
-            .invoice-container {
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-            }
-
-            .footer {
-                page-break-after: always;
-            }
-        }
-</style>
-<div class="invoice-container">
-    <div class="header">
-        <img src="{% static 'images/logo.png'%}" alt="Company Logo">
-        <h1>Invoice</h1>
+<div class="max-w-3xl mx-auto">
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+      <div class="flex items-center gap-3">
+        <img src="{% static 'images/logo.png'%}" alt="Logo" class="w-12 h-12">
+        <div>
+          <h2 class="text-2xl font-bold display">Invoice</h2>
+          <p class="text-sm text-slate-500">We Care Hospital</p>
+        </div>
+      </div>
+      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs">Paid</span>
     </div>
 
-    <div class="invoice-info">
-        <div>
-            <strong>Invoice From:</strong>
-            <p>
-                We Care Hospital<br>
-                Maduranagar, Hyderabad<br>
-                
-        </div>
-
-        <div>
-            <strong>Invoice To:</strong>
-            <p>
-                Patient Name : {{data.name}}<br>
-                Client Address<br>
-                City, State, ZIP Code<br>
-                Email: client@example.com<br>
-                Phone: +987 654 3210
-            </p>
-        </div>
+    <div class="grid md:grid-cols-2 gap-6 text-sm text-slate-600 mb-6">
+      <div>
+        <p class="font-semibold text-slate-800">Invoice From</p>
+        <p>We Care Hospital</p>
+        <p>Maduranagar, Hyderabad</p>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800">Invoice To</p>
+        <p>Patient Name: {{ data.name }}</p>
+        <p>Address: {{ data1.address|default:"-" }}</p>
+        <p>Phone: {{ data1.phone|default:"-" }}</p>
+      </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Item Description</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total</th>
-            </tr>
+    <div class="overflow-hidden border border-slate-100 rounded-xl">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-900 text-white">
+          <tr>
+            <th class="text-left px-4 py-3">#</th>
+            <th class="text-left px-4 py-3">Description</th>
+            <th class="text-left px-4 py-3">Qty</th>
+            <th class="text-left px-4 py-3">Price</th>
+            <th class="text-left px-4 py-3">Total</th>
+          </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Service/Product A</td>
-                <td>2</td>
-                <td>$100</td>
-                <td>$200</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Service/Product B</td>
-                <td>1</td>
-                <td>$150</td>
-                <td>$150</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Service/Product C</td>
-                <td>5</td>
-                <td>$50</td>
-                <td>$250</td>
-            </tr>
+        <tbody class="divide-y divide-slate-100">
+          <tr>
+            <td class="px-4 py-3">1</td>
+            <td class="px-4 py-3">Consultation</td>
+            <td class="px-4 py-3">1</td>
+            <td class="px-4 py-3">$100</td>
+            <td class="px-4 py-3">$100</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-3">2</td>
+            <td class="px-4 py-3">Lab Services</td>
+            <td class="px-4 py-3">1</td>
+            <td class="px-4 py-3">$50</td>
+            <td class="px-4 py-3">$50</td>
+          </tr>
         </tbody>
-        <tfoot>
-            <tr class="total">
-                <td colspan="4">Subtotal</td>
-                <td>$600</td>
-            </tr>
-            <tr class="total">
-                <td colspan="4">Tax (10%)</td>
-                <td>$60</td>
-            </tr>
-            <tr class="total">
-                <td colspan="4">Total</td>
-                <td>$660</td>
-            </tr>
+        <tfoot class="bg-slate-50">
+          <tr>
+            <td colspan="4" class="px-4 py-3 text-right font-semibold">Total</td>
+            <td class="px-4 py-3 font-semibold">$150</td>
+          </tr>
         </tfoot>
-    </table>
-
-    <div class="footer">
-        <p>Thank you for your business! If you have any questions, please contact us at company@example.com.</p>
+      </table>
     </div>
+    <p class="text-xs text-slate-500 mt-6">Thank you for choosing We Care Hospital.</p>
+  </div>
 </div>
 {% endblock %}

@@ -1,90 +1,111 @@
 {% extends 'base.html' %}
 {% block contents %}
-{% load static %}
-<style>
-    /* styles.css */
-    .card {
-        border-radius: 8px;
-        background-color: #f8f9fa;
-        /* Light grey background for cards */
-    }
-
-    .form-label {
-        font-weight: bold;
-        color: #333;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-</style> <!-- Link to external CSS if needed -->
-
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg p-4">
-                <h2 class="text-center mb-4">Book an Appointment</h2>
-                {% for mes in messages %}
-                <h4>{{mes}}</h4>
-                {% endfor %}
-                <form method="POST" action="{% url 'Book_Appointments' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group mb-3">
-                        <label for="id_name" class="form-label">Name</label>
-                        {{ App_form.name }}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_phone" class="form-label">Phone</label>
-                        {{ App_form.phone }}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_age" class="form-label">Age</label>
-                        {{ App_form.age }}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_address" class="form-label">Address</label>
-                        {{ App_form.address}}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_doctor_name" class="form-label">Consultation Department</label>
-                        {{ App_form.problem }}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_doctor_name" class="form-label">Doctor Name</label>
-                        {{ App_form.doctor_name }}
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_upload_reports" class="form-label">Upload_Reports</label>
-                        {{ App_form.upload_report }}
-
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="id_status" class="form-label"></label>
-                        {{ App_form.medication }}
-
-                    </div>
-                    
-
-                    <div class="form-group mb-3">
-                        <label for="id_status" class="form-label"></label>
-                        {{ App_form.status }}
-
-                    </div>
-                   
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-block">Book Appointment</button>
-                    </div>
-                </form>
+<div class="max-w-4xl mx-auto px-6 py-16">
+    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-10" x-data="fileForm()" x-init="init()">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
+                <i class="fas fa-calendar-check"></i>
             </div>
+            <h2 class="text-3xl font-extrabold display mt-4">Book an Appointment</h2>
+            <p class="text-slate-500">Fill out your details and upload reports in PDF format.</p>
         </div>
+
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for mes in messages %}
+                <div class="rounded-lg px-4 py-3 text-sm bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    <i class="fas fa-circle-check mr-2"></i>{{ mes }}
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'Book_Appointments' %}" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Name</label>
+                    {{ App_form.name }}
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Phone</label>
+                    {{ App_form.phone }}
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Age</label>
+                    {{ App_form.age }}
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Address</label>
+                    {{ App_form.address }}
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Consultation Department</label>
+                    {{ App_form.problem }}
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700">Doctor Name</label>
+                    {{ App_form.doctor_name }}
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm font-semibold text-slate-700">Upload Reports (PDF)</label>
+                {{ App_form.upload_report }}
+                <p class="text-xs text-slate-500 mt-2" x-text="fileName || 'No file selected'"></p>
+                <p class="text-xs text-rose-600 mt-1" x-show="error" x-text="error"></p>
+            </div>
+
+            <div class="hidden">
+                {{ App_form.medication }}
+                {{ App_form.status }}
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 text-white font-semibold shadow-lg hover:shadow-xl transition">
+                Book Appointment
+            </button>
+        </form>
     </div>
 </div>
 
+<style>
+    input, select, textarea {
+        width: 100%;
+        margin-top: 6px;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f8fafc;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: #10b981;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+</style>
+
+<script>
+    function fileForm() {
+        return {
+            fileName: '',
+            error: '',
+            init() {
+                const input = document.getElementById('id_upload_report');
+                if (!input) return;
+                input.addEventListener('change', () => {
+                    const file = input.files && input.files[0];
+                    if (!file) {
+                        this.fileName = '';
+                        this.error = '';
+                        return;
+                    }
+                    this.fileName = file.name;
+                    this.error = file.name.toLowerCase().endsWith('.pdf') ? '' : 'Only PDF files are allowed.';
+                });
+            }
+        };
+    }
+</script>
 {% endblock %}

@@ -1,102 +1,83 @@
 {% extends 'Admin/AdminHome.html' %}
 {% block contents %}
-{% load static %}
+<div x-data="{ query: '' }" class="space-y-6">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold display">Doctor Directory</h2>
+            <p class="text-sm text-slate-500">Manage doctor profiles and credentials.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
+                <input x-model="query" type="text" placeholder="Search by name or email"
+                             class="pl-9 pr-4 py-2 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-200" />
+            </div>
+            <a href="{% url 'Add_Doctor' %}" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-semibold shadow-sm">
+                <i class="fas fa-user-plus mr-2"></i>Add Doctor
+            </a>
+        </div>
+    </div>
 
-
-
-<div class="doctor-details">
-    
-    <h1 class="text-center">Doctor Details</h1>
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>SL No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Specialization</th>
-                <th>Qualification</th>
-                <!-- <th>Experience</th> -->
-                <th>Password</th>
-                <th>Edit/Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for doc in Doctor_data %}
-            <tr>
-                <td>{{forloop.counter}}</td>
-                <td>{{ doc.name }}</td>
-                <td>{{ doc.email }}</td>
-                <td>{{ doc.phone }}</td>
-                <td>{{ doc.specialization }}</td>
-                <td>{{ doc.qualification }}</td>
-                <!-- <td>{{ doc.experience }}</td> -->
-                <td>{{ doc.password  }}</td>
-                <td><a href="{% url 'Update_Doctor_Details' doc.id%}">Edit</a>/<a href="{% url 'Delete_Doctor_Details' doc.id %}">Delete</a></td>
-            </tr>
+    {% if messages %}
+        <div class="space-y-2">
+            {% for mes in messages %}
+            <div class="rounded-lg px-4 py-3 text-sm bg-emerald-50 text-emerald-700 border border-emerald-100">
+                <i class="fas fa-circle-check mr-2"></i>{{ mes }}
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    {%for mes in messages %}
-    <h3 style="color: #009879;">{{mes}}</h3>
-    {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-slate-900 text-white">
+                <tr>
+                    <th class="text-left px-4 py-3">#</th>
+                    <th class="text-left px-4 py-3">Doctor</th>
+                    <th class="text-left px-4 py-3">Contact</th>
+                    <th class="text-left px-4 py-3">Specialization</th>
+                    <th class="text-left px-4 py-3">Qualification</th>
+                    <th class="text-left px-4 py-3">Password</th>
+                    <th class="text-left px-4 py-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for doc in Doctor_data %}
+                <tr class="hover:bg-slate-50" x-show="!query || '{{ doc.name|lower }}'.includes(query.toLowerCase()) || '{{ doc.email|lower }}'.includes(query.toLowerCase())">
+                    <td class="px-4 py-3">{{ forloop.counter }}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-semibold">{{ doc.name }}</div>
+                        <div class="text-xs text-slate-500">{{ doc.specialization }}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div>{{ doc.email }}</div>
+                        <div class="text-xs text-slate-500">{{ doc.phone }}</div>
+                    </td>
+                    <td class="px-4 py-3">{{ doc.specialization }}</td>
+                    <td class="px-4 py-3">{{ doc.qualification }}</td>
+                    <td class="px-4 py-3">{{ doc.password }}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-wrap gap-2">
+                            <a href="{% url 'Update_Doctor_Details' doc.id %}" class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 text-xs font-semibold">Edit</a>
+                            <button
+                                hx-post="{% url 'api_delete_doctor' doc.id %}"
+                                hx-confirm="Delete this doctor?"
+                                hx-target="closest tr"
+                                hx-swap="outerHTML"
+                                class="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-700 text-xs font-semibold">
+                                Delete
+                            </button>
+                            <a href="{% url 'Delete_Doctor_Details' doc.id %}" class="hidden">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-4 py-8 text-center text-slate-500">No doctors found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<style>
-    .doctor-details {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .text-center {
-        text-align: center;
-        color: #333;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .styled-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 25px 0;
-        font-size: 18px;
-        text-align: left;
-        border-radius: 5px 5px 0 0;
-        overflow: hidden;
-    }
-
-    .styled-table th,
-    .styled-table td {
-        padding: 12px 15px;
-    }
-
-    .styled-table thead tr {
-        background-color: #009879;
-        color: #ffffff;
-        text-align: left;
-        font-weight: bold;
-    }
-
-    .styled-table tbody tr {
-        border-bottom: 1px solid #dddddd;
-    }
-
-    .styled-table tbody tr:nth-of-type(even) {
-        background-color: #f3f3f3;
-    }
-
-    .styled-table tbody tr:last-of-type {
-        border-bottom: 2px solid #009879;
-    }
-
-    .styled-table tbody tr:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-</style>
-
 {% endblock %}

@@ -1,64 +1,77 @@
 {% extends 'Admin/AdminHome.html' %}
 {% block contents %}
-{% load static %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold display">Appointments</h2>
+            <p class="text-sm text-slate-500">Approve or review pending requests.</p>
+        </div>
+    </div>
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Appointment List</h2>
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover table-striped align-middle">
-            <thead class="table-dark">
+    {% if messages %}
+        <div class="space-y-2">
+            {% for mes in messages %}
+            <div class="rounded-lg px-4 py-3 text-sm bg-emerald-50 text-emerald-700 border border-emerald-100">
+                <i class="fas fa-circle-check mr-2"></i>{{ mes }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-slate-900 text-white">
                 <tr>
-                    <th scope="col">SL No</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Doctor Name</th>
-                    <th scope="col">Problem</th>
-                    <th scope="col">Report</th>
-                    <th scope="col">Status</th>
+                    <th class="text-left px-4 py-3">#</th>
+                    <th class="text-left px-4 py-3">Patient</th>
+                    <th class="text-left px-4 py-3">Contact</th>
+                    <th class="text-left px-4 py-3">Doctor</th>
+                    <th class="text-left px-4 py-3">Problem</th>
+                    <th class="text-left px-4 py-3">Report</th>
+                    <th class="text-left px-4 py-3">Status</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-slate-100">
                 {% for data in appointment %}
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{ data.name }}</td>
-                    <td>{{ data.phone }}</td>
-                    <td>{{ data.age }}</td>
-                    <td>{{ data.address }}</td>
-                    <td>{{ data.doctor_name }}</td>
-                    <td>{{ data.problem }}</td>
-                    <td><a href="{{ data.upload_report.url }}" target="_blank"  class="badge bg-success" style=" text-decoration: none;"> Download Report</a></td>
-                    <td>
-                        <span class="badge 
-                        {% if data.status == 'Pending' %} bg-warning text-dark 
-                        {% elif data.status == 'Approved' %} bg-success 
-                        {% else %} bg-danger {% endif %}">
-                          <a href="{% url 'Add_Appointments' data.id %}" style="text-decoration: none; color: black;">  {{ data.status }}</a>
-                        </span>
+                <tr class="hover:bg-slate-50" x-data="{ status: '{{ data.status }}', loading: false }">
+                    <td class="px-4 py-3">{{ forloop.counter }}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-semibold">{{ data.name }}</div>
+                        <div class="text-xs text-slate-500">Age: {{ data.age }}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div>{{ data.phone }}</div>
+                        <div class="text-xs text-slate-500">{{ data.address }}</div>
+                    </td>
+                    <td class="px-4 py-3">{{ data.doctor_name }}</td>
+                    <td class="px-4 py-3">{{ data.problem }}</td>
+                    <td class="px-4 py-3">
+                        <a href="{{ data.upload_report.url }}" target="_blank" class="text-emerald-700 font-semibold">
+                            <i class="fas fa-file-pdf mr-1"></i>Report
+                        </a>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                                        :class="status === 'Approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'"
+                                        x-text="status"></span>
+                            <button
+                                x-show="status !== 'Approved'"
+                                @click="loading = true; fetch('{% url 'api_approve_appointment' data.id %}', { method: 'POST' }).then(r => r.json()).then(res => { if (res.ok) status = 'Approved'; }).finally(() => loading = false);"
+                                class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">
+                                <span x-show="!loading">Approve</span>
+                                <span x-show="loading"><i class="fas fa-circle-notch fa-spin"></i></span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center">No Appointments Available</td>
+                    <td colspan="7" class="px-4 py-8 text-center text-slate-500">No appointments available.</td>
                 </tr>
                 {% endfor %}
             </tbody>
-            {% for mes in messages %}
-            <h3 style="color: #009879;">{{mes}}</h3>
-            {% endfor %}
         </table>
     </div>
 </div>
-
-<style>
-    .table-hover tbody tr:hover {
-        background-color: #f8f9fa !important;
-        cursor: pointer;
-    }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

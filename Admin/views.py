@@ -2,10 +2,13 @@ from django.shortcuts import render , redirect
 from Doctor.models import AddDoctor, Doctor_Medication
 from Doctor.forms import AddDoctor_Form , Doctor_Update_form
 from django.contrib import messages
-from Patient.models import Book_Appointment 
+from Patient.models import Book_Appointment, Patient_Regiser
 from django.core.mail import EmailMessage
 from django.conf import settings
 from Admin.models import Payment_Model , Pyment_Details
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 def Base(request):
     return render(request,'base.html')
@@ -134,3 +137,106 @@ def View_Patient_Payments(request, id ):
 def Admin_Medication_View(request):
     data = Doctor_Medication.objects.filter(medication='Sended')
     return render(request, 'Admin/Admin_Medication.html', {'data': data})
+
+
+# ============================================================
+# JSON API endpoints for AJAX / charts (consumed by frontend JS)
+# ============================================================
+
+def api_admin_stats(request):
+    doctors_total = AddDoctor.objects.count()
+    patients_total = Patient_Regiser.objects.count()
+    appointments_pending = Book_Appointment.objects.filter(status='Pending').count()
+    appointments_approved = Book_Appointment.objects.filter(status='Approved').count()
+    medications_sent = Doctor_Medication.objects.filter(medication='Sended').count()
+    payments_paid = Payment_Model.objects.filter(status='Paid').count()
+    payments_due = Pyment_Details.objects.count()
+
+    specializations = {}
+    for doc in AddDoctor.objects.all():
+        specializations[doc.specialization] = specializations.get(doc.specialization, 0) + 1
+
+    return JsonResponse({
+        'doctors': doctors_total,
+        'patients': patients_total,
+        'pending': appointments_pending,
+        'approved': appointments_approved,
+        'medications': medications_sent,
+        'payments_paid': payments_paid,
+        'payments_due': payments_due,
+        'specializations': specializations,
+    })
+
+
+def api_doctors_list(request):
+    docs = [{
+        'id': d.id, 'name': d.name, 'email': d.email, 'phone': d.phone,
+        'specialization': d.specialization, 'qualification': d.qualification,
+        'experience': d.experience,
+    } for d in AddDoctor.objects.all()]
+    return JsonResponse({'doctors': docs})
+
+
+@require_POST
+@csrf_exempt
+def api_delete_doctor(request, id):
+    try:
+        AddDoctor.objects.get(id=id).delete()
+        return JsonResponse({'ok': True, 'message': 'Doctor deleted successfully'})
+    except AddDoctor.DoesNotExist:
+        return JsonResponse({'ok': False, 'message': 'Doctor not found'}, status=404)
+
+
+@require_POST
+@csrf_exempt
+def api_approve_appointment(request, id):
+    try:
+        appt = Book_Appointment.objects.get(id=id)
+        appt.status = 'Approved'
+        appt.save()
+        return JsonResponse({'ok': True, 'message': f'Appointment approved for {appt.name}'})
+    except Book_Appointment.DoesNotExist:
+        return JsonResponse({'ok': False, 'message': 'Appointment not found'}, status=404)
+
+
+def api_doctor_stats(request):
+    doctor_name = request.session.get('doctor_name')
+    if not doctor_name:
+        return JsonResponse({'error': 'not authenticated'}, status=401)
+    try:
+        doctor = AddDoctor.objects.get(name=doctor_name)
+    except AddDoctor.DoesNotExist:
+        return JsonResponse({'error': 'doctor not found'}, status=404)
+
+    my_patients = Book_Appointment.objects.filter(doctor_name=str(doctor), status='Approved').count()
+    sent_meds = Doctor_Medication.objects.filter(doctor_name=str(doctor), medication='Sended').count()
+    pending_meds = Book_Appointment.objects.filter(doctor_name=str(doctor), status='Approved', medication='None').count()
+
+    return JsonResponse({
+        'my_patients': my_patients,
+        'sent_medications': sent_meds,
+        'pending_medications': pending_meds,
+        'doctor_name': doctor.name,
+        'specialization': doctor.specialization,
+    })
+
+
+def api_patient_stats(request):
+    name = request.session.get('name')
+    if not name:
+        return JsonResponse({'error': 'not authenticated'}, status=401)
+
+    appts = Book_Appointment.objects.filter(name=name).count()
+    approved = Book_Appointment.objects.filter(name=name, status='Approved').count()
+    meds = Doctor_Medication.objects.filter(name=name, medication='Sended').count()
+    payments = Payment_Model.objects.filter(name=name).count()
+    paid = Payment_Model.objects.filter(name=name, status='Paid').count()
+
+    return JsonResponse({
+        'name': name,
+        'appointments_total': appts,
+        'appointments_approved': approved,
+        'medications': meds,
+        'payments_total': payments,
+        'payments_paid': paid,
+    })
